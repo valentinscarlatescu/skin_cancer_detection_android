@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="horizontal"
+    android:paddingStart="20dp"
+    android:paddingTop="10dp"
+    android:paddingEnd="10dp"
+    android:paddingBottom="10dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/itemProductCardView"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        app:cardCornerRadius="30dp"
+        app:cardPreventCornerOverlap="false">
+
+        <ImageView
+            android:id="@+id/itemProductImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/item_placeholder_padding" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/itemProductNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textSize="16sp"
+        tools:text="Product" />
+
+    <ImageView
+        android:id="@+id/itemProductDeleteImageView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="8dp"
+        android:src="@drawable/icon_delete" />
+
+    <ImageView
+        android:id="@+id/itemProductDetailsImageView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="8dp"
+        android:src="@drawable/icon_info"
+        android:tint="@color/colorPrimary" />
+
+</LinearLayout>

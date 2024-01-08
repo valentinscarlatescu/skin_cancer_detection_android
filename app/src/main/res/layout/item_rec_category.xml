@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/itemRecCategoryProductsTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="@string/most_popular_products"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/item_cart_text_size" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/itemRecCategoryProductsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingTop="40dp"
+        android:paddingBottom="10dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_rec_category_product" />
+
+</FrameLayout>

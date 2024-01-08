@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/number_input_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="40dp"
+    android:background="@drawable/dialog_background"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/dialogProductDetailsCardView"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="25dp"
+        app:cardCornerRadius="60dp"
+        app:cardPreventCornerOverlap="false">
+
+        <ImageView
+            android:id="@+id/dialogProductDetailsImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/item_placeholder_padding" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/dialogProductDetailsNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        tools:text="Name: Apple" />
+
+    <TextView
+        android:id="@+id/dialogProductDetailsCategoryTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        tools:text="Category: fruits" />
+
+    <TextView
+        android:id="@+id/dialogProductDetailsPriceTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        tools:text="Price: $15/unit" />
+
+    <TextView
+        android:id="@+id/dialogProductDetailsCartsNumberTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        tools:text="Preferred in: 23 carts" />
+
+    <TextView
+        android:id="@+id/dialogProductDetailsAdditionalInfoTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        tools:text="Additional info: Test" />
+
+</LinearLayout>

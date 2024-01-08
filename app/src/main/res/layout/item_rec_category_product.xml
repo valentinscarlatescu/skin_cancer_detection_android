@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/itemRecCategoryProductCardView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="start"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        app:cardCornerRadius="40dp"
+        app:cardPreventCornerOverlap="false">
+
+        <ImageView
+            android:id="@+id/itemRecProductImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/item_placeholder_padding" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/itemRecCategoryProductPercentageTextView"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_gravity="start|center"
+        android:background="@drawable/round_item_focus_background"
+        android:elevation="10dp"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:padding="1dp"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        tools:text="100%" />
+
+    <TextView
+        android:id="@+id/itemRecCategoryProductTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/itemRecCategoryProductCardView"
+        android:layout_centerHorizontal="true"
+        android:ellipsize="end"
+        android:maxWidth="100dp"
+        android:singleLine="true"
+        android:textSize="12sp"
+        tools:text="Apple" />
+
+</RelativeLayout>
