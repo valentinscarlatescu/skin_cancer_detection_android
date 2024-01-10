@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                         appTab = AppTab.HOME;
                     }
                     break;
-                case R.id.mainMenuSocial:
+                case R.id.mainMenuHistory:
                     if (appTab != AppTab.HISTORY) {
                         openTab(AppTab.HISTORY);
                         appTab = AppTab.HISTORY;

@@ -7,7 +7,7 @@
         android:title="@string/menu_item_home" />
 
     <item
-        android:id="@+id/mainMenuSocial"
+        android:id="@+id/mainMenuHistory"
         android:icon="@drawable/item_history"
         android:title="@string/menu_item_history" />
 

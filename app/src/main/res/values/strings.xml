@@ -56,7 +56,16 @@
     <string name="my_cart">My cart</string>
     <string name="cart_empty">Cart empty</string>
 
-    <string name="header_home">Add a popular product to your cart!</string>
+    <string name="header_home">Skin Cancer Detection</string>
+    <string name="home_malign">Malign</string>
+    <string name="home_benign">Benign</string>
+    <string name="home_results">Results</string>
+    <string name="home_history_results">History Results</string>
+    <string name="home_image">IMAGE UPLOAD</string>
+    <string name="home_image_date">Image date: %1$s</string>
+    <string name="home_percentage">%d%</string>
+    <string name="home_date">Date</string>
+    <string name="header_home_results">Results</string>
     <string name="header_categories">Categories</string>
     <string name="header_carts">Carts</string>
     <string name="header_products">Products</string>
