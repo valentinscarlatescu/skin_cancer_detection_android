@@ -46,7 +46,7 @@ import skin_cancer_detection_android.net.service.UserService;
 import skin_cancer_detection_android.ui.auth.AuthActivity;
 import skin_cancer_detection_android.ui.common.ProgressDialog;
 import skin_cancer_detection_android.ui.main.MainActivity;
-import skin_cancer_detection_android.ui.main.common.cart.ProfileCartsFragment;
+//import skin_cancer_detection_android.ui.main.common.cart.ProfileCartsFragment;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,8 +77,8 @@ public class ProfileFragment extends Fragment {
     TextView genderTextView;
     @BindView(R.id.profileJoinDateTextView)
     TextView joinDateTextView;
-    @BindView(R.id.profileCartsNumberTextView)
-    TextView cartsNumberTextView;
+//    @BindView(R.id.profileCartsNumberTextView)
+//    TextView cartsNumberTextView;
 
     @BindString(R.string.profile_user_id)
     String userIdFormat;
@@ -88,8 +88,8 @@ public class ProfileFragment extends Fragment {
     String userPasswordFormat;
     @BindString(R.string.profile_user_join_date)
     String userJoinDateFormat;
-    @BindString(R.string.carts_number)
-    String cartsNumberFormat;
+//    @BindString(R.string.carts_number)
+//    String cartsNumberFormat;
 
     private Unbinder unbinder;
     private User user = new User();
@@ -100,7 +100,7 @@ public class ProfileFragment extends Fragment {
     private AuthService authService = RetrofitClient.getRetrofitInstance().create(AuthService.class);
     private UserService userService = RetrofitClient.getRetrofitInstance().create(UserService.class);
     private FileService fileService = RetrofitClient.getRetrofitInstance().create(FileService.class);
-    private CartService cartService = RetrofitClient.getRetrofitInstance().create(CartService.class);
+//    private CartService cartService = RetrofitClient.getRetrofitInstance().create(CartService.class);
 
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
@@ -220,31 +220,31 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    @OnClick(R.id.profileViewCartsButton)
-    void onViewCartsClicked() {
-        ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.show();
-
-        cartService.getByUserId(user.id).enqueue(new Callback<List<Cart>>() {
-            @Override
-            public void onResponse(Call<List<Cart>> call, Response<List<Cart>> response) {
-                if (response.isSuccessful()) {
-                    ProfileCartsFragment fragment = new ProfileCartsFragment();
-                    fragment.setCarts(response.body());
-                    ((MainActivity) requireActivity()).setFragment(fragment);
-                } else {
-                    Toast.makeText(getContext(), ErrorHandler.getServerError(response), Toast.LENGTH_LONG).show();
-                }
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onFailure(Call<List<Cart>> call, Throwable t) {
-                progressDialog.dismiss();
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
+//    @OnClick(R.id.profileViewCartsButton)
+//    void onViewCartsClicked() {
+//        ProgressDialog progressDialog = new ProgressDialog(getContext());
+//        progressDialog.show();
+//
+//        cartService.getByUserId(user.id).enqueue(new Callback<List<Cart>>() {
+//            @Override
+//            public void onResponse(Call<List<Cart>> call, Response<List<Cart>> response) {
+//                if (response.isSuccessful()) {
+//                    ProfileCartsFragment fragment = new ProfileCartsFragment();
+//                    fragment.setCarts(response.body());
+//                    ((MainActivity) requireActivity()).setFragment(fragment);
+//                } else {
+//                    Toast.makeText(getContext(), ErrorHandler.getServerError(response), Toast.LENGTH_LONG).show();
+//                }
+//                progressDialog.dismiss();
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Cart>> call, Throwable t) {
+//                progressDialog.dismiss();
+//                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+//            }
+//        });
+//    }
 
     void init() {
         User sessionUser = Session.getInstance().getUser();
@@ -256,7 +256,7 @@ public class ProfileFragment extends Fragment {
         user.lastName = sessionUser.lastName;
         user.gender = sessionUser.gender;
         user.joinDateTime = sessionUser.joinDateTime;
-        user.cartsNumber = sessionUser.cartsNumber;
+//        user.cartsNumber = sessionUser.cartsNumber;
 
         String password = requireActivity().getApplicationContext()
                 .getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE)
@@ -270,7 +270,7 @@ public class ProfileFragment extends Fragment {
         lastNameEditText.setText(user.lastName);
         genderTextView.setText(user.gender == null ? "" : getString(user.gender.getName()));
         joinDateTextView.setText(String.format(userJoinDateFormat, user.joinDateTime.format(dateTimeFormatter)));
-        cartsNumberTextView.setText(String.format(cartsNumberFormat, user.cartsNumber));
+//        cartsNumberTextView.setText(String.format(cartsNumberFormat, user.cartsNumber));
 
         bitmap = null;
         cameraImageUri = null;

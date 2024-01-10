@@ -3,7 +3,7 @@ package skin_cancer_detection_android.ui.main;
 public enum AppTab {
 
     HOME(0),
-    SOCIAL(1),
+    HISTORY(1),
     PROFILE(2);
 
     private int index;
@@ -21,7 +21,7 @@ public enum AppTab {
             default:
                 return HOME;
             case 1:
-                return SOCIAL;
+                return HISTORY;
             case 2:
                 return PROFILE;
         }

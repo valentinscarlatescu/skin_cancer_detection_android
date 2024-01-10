@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     {
         fragments.put(AppTab.HOME, new HomeTabFragment());
-        fragments.put(AppTab.SOCIAL, new SocialTabFragment());
+        fragments.put(AppTab.HISTORY, new SocialTabFragment());
         fragments.put(AppTab.PROFILE, new ProfileTabFragment());
     }
 
@@ -53,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 case R.id.mainMenuSocial:
-                    if (appTab != AppTab.SOCIAL) {
-                        openTab(AppTab.SOCIAL);
-                        appTab = AppTab.SOCIAL;
+                    if (appTab != AppTab.HISTORY) {
+                        openTab(AppTab.HISTORY);
+                        appTab = AppTab.HISTORY;
                     }
                     break;
                 case R.id.mainMenuProfile:

@@ -89,18 +89,4 @@
         android:textSize="@dimen/profile_text_size"
         tools:text="Carts number: 23" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/socialProfileViewCartsButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="15dp"
-        android:backgroundTint="@android:color/white"
-        android:src="@drawable/icon_cart"
-        android:tint="@color/colorPrimary"
-        app:fabCustomSize="@dimen/fab_size"
-        app:maxImageSize="@dimen/fab_image_size" />
-
 </LinearLayout>
