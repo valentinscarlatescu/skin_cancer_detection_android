@@ -1,4 +1,4 @@
-package skin_cancer_detection_android.ui.main.common.result;
+package skin_cancer_detection_android.ui.main.history;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,7 +51,7 @@ public class HistoryResultsAdapter extends RecyclerView.Adapter<HistoryResultsAd
     }
 
     public void setOnResultClickListener(ResultClickListener listener) {
-//        this.listener = listener;
+        this.listener = listener;
     }
 
     public class ResultViewHolder extends RecyclerView.ViewHolder {

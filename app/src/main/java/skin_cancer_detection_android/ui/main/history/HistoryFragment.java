@@ -21,7 +21,7 @@ import butterknife.Unbinder;
 import skin_cancer_detection_android.R;
 import skin_cancer_detection_android.net.model.Result;
 import skin_cancer_detection_android.ui.main.MainActivity;
-import skin_cancer_detection_android.ui.main.common.result.HistoryResultsAdapter;
+import skin_cancer_detection_android.ui.main.history.HistoryResultsAdapter;
 import skin_cancer_detection_android.ui.main.common.result.ResultsFragment;
 
 public class HistoryFragment extends Fragment implements HistoryResultsAdapter.ResultClickListener {
@@ -49,7 +49,7 @@ public class HistoryFragment extends Fragment implements HistoryResultsAdapter.R
         recyclerView.setAdapter(resultsAdapter);
 
         resultsAdapter.setResults(results);
-//        resultsAdapter.setOnResultClickListener(this);
+        resultsAdapter.setOnResultClickListener(this);
 
         return view;
     }
