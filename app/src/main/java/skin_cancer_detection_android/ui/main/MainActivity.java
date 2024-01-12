@@ -17,13 +17,16 @@ import java.util.stream.Stream;
 
 import skin_cancer_detection_android.R;
 import skin_cancer_detection_android.net.Session;
+import skin_cancer_detection_android.net.model.Result;
+import skin_cancer_detection_android.ui.main.common.result.ResultsFragment;
 import skin_cancer_detection_android.ui.main.home.HomeTabFragment;
+import skin_cancer_detection_android.ui.main.homescd.HomeFragment;
 import skin_cancer_detection_android.ui.main.profile.ProfileTabFragment;
 import skin_cancer_detection_android.ui.main.social.SocialTabFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnImageUploadListener {
 
     private boolean isTwiceClicked;
     private AppTab appTab = AppTab.HOME;
@@ -126,5 +129,18 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
 
         fragmentToShow.onTabClicked();
+    }
+
+    @Override
+    public void onImageUploaded(Result result) {
+        ResultsFragment resultsFragment = new ResultsFragment();
+        // Trimite rezultatul către ResultsFragment pentru a fi afișat
+        resultsFragment.setResults(result);
+
+        // Înainte de a deschide fragmentul, asigură-te că ai rezultatele actualizate
+        resultsFragment.setResults(result);
+
+        // Deschide ResultsFragment în locul fragmentului curent
+        setFragment(resultsFragment);
     }
 }

@@ -4,11 +4,15 @@ import com.google.gson.annotations.SerializedName;
 
 import java.time.LocalDateTime;
 
-public class Image {
+public class Result {
     @SerializedName("id")
     public Long id;
     @SerializedName("user")
     public User user;
+    @SerializedName("malign")
+    public String malign;
+    @SerializedName("benign")
+    public String benign;
     @SerializedName("dateTime")
     public LocalDateTime dateTime;
     @SerializedName("imagePath")

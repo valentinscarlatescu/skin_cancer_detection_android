@@ -2,6 +2,7 @@ package skin_cancer_detection_android.net;
 
 import android.os.Handler;
 
+import skin_cancer_detection_android.net.model.Result;
 import skin_cancer_detection_android.net.model.User;
 
 public class Session {
@@ -11,6 +12,7 @@ public class Session {
     private Handler handler = new Handler();
     private User user;
     private String token;
+    private Result result;
 
     public Handler getHandler() {
         return handler;
@@ -22,6 +24,10 @@ public class Session {
 
     public User getUser() {
         return user;
+    }
+
+    public Result getResult() {
+        return result;
     }
 
     public void setUser(User user) {

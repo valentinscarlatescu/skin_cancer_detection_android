@@ -7,7 +7,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -41,11 +40,11 @@ import skin_cancer_detection_android.net.ErrorHandler;
 import skin_cancer_detection_android.net.ImageHandler;
 import skin_cancer_detection_android.net.Session;
 import skin_cancer_detection_android.net.client.RetrofitClient;
-import skin_cancer_detection_android.net.model.Image;
+import skin_cancer_detection_android.net.model.Result;
 import skin_cancer_detection_android.net.model.User;
 import skin_cancer_detection_android.net.service.AuthService;
 import skin_cancer_detection_android.net.service.FileService;
-import skin_cancer_detection_android.net.service.ImageService;
+import skin_cancer_detection_android.net.service.ResultService;
 import skin_cancer_detection_android.net.service.UserService;
 import skin_cancer_detection_android.ui.common.ProgressDialog;
 
@@ -55,6 +54,7 @@ public class HomeFragment extends Fragment {
     @BindView(R.id.imagePhotoImageView)
     ImageView photoImageView;
 
+    private OnImageUploadListener onImageUploadListener;
     private Unbinder unbinder;
     private User user = new User();
     private Bitmap bitmap;
@@ -191,19 +191,24 @@ public class HomeFragment extends Fragment {
         }
 
         // Construiește obiectul Image cu calea imaginii și data curentă
-        Image image = new Image();
-        image.user = user;
-        image.imagePath = user.imagePath;
-        image.dateTime = LocalDateTime.now();
+        Result result = new Result();
+        result.user = user;
+        result.imagePath = user.imagePath;
+        result.dateTime = LocalDateTime.now();
 
         // Realizează apelul către backend pentru încărcarea imaginii
-        Call<Image> uploadCall = ImageService.updateScreen(image);
-        uploadCall.enqueue(new Callback<Image>() {
+        Call<Result> uploadCall = ResultService.updateScreen(result);
+        uploadCall.enqueue(new Callback<Result>() {
             @Override
-            public void onResponse(Call<Image> call, Response<Image> response) {
+            public void onResponse(Call<Result> call, Response<Result> response) {
                 if (response.isSuccessful()) {
                     // Gestionează răspunsul de la backend după încărcarea imaginii
                     Toast.makeText(requireContext(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+
+                    // Comunică rezultatul către activitatea gazdă (MainActivity)
+                    if (onImageUploadListener != null) {
+                        onImageUploadListener.onImageUploaded(response.body());
+                    }
                 } else {
                     // Gestionează eroarea primită de la backend
                     Toast.makeText(requireContext(), ErrorHandler.getServerError(response), Toast.LENGTH_LONG).show();
@@ -212,7 +217,7 @@ public class HomeFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<Image> call, Throwable t) {
+            public void onFailure(Call<Result> call, Throwable t) {
                 // Gestionează cazul în care apelul către backend eșuează
                 progressDialog.dismiss();
                 Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_LONG).show();
@@ -241,5 +246,15 @@ public class HomeFragment extends Fragment {
     private void showError() {
         Toast.makeText(requireContext(), getString(R.string.message_default_error), Toast.LENGTH_SHORT).show();
     }
+
+    public interface OnImageUploadListener {
+        void onImageUploaded(Result result);
+    }
+
+    public void setOnImageUploadListener(OnImageUploadListener listener) {
+        this.onImageUploadListener = listener;
+    }
+
+
 
 }
