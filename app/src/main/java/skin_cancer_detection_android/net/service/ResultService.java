@@ -11,15 +11,11 @@ import skin_cancer_detection_android.net.model.Result;
 
 public interface ResultService {
 
-//    @GET("/api/image")
-//    Call<Image> getImage();
-
     @GET("/api/results")
     Call<List<Result>> getByUserId(@Query("userId") Long userId);
 
     @PUT("/api/result")
-    static Call<Result> updateScreen(@Body Result result) {
-        return null;
-    }
+    Call<Result> updateScreen(@Body Result result);
+
 
 }
