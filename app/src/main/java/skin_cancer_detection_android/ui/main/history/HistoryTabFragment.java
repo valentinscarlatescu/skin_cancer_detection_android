@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import skin_cancer_detection_android.ui.main.TabFragment;
-import skin_cancer_detection_android.ui.main.home.HomeFragment;
+import skin_cancer_detection_android.ui.main.homescd.HomeFragment;
 
 public class HistoryTabFragment extends TabFragment {
 
