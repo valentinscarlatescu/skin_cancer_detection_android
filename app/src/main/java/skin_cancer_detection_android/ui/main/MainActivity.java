@@ -19,8 +19,9 @@ import skin_cancer_detection_android.R;
 import skin_cancer_detection_android.net.Session;
 import skin_cancer_detection_android.net.model.Result;
 import skin_cancer_detection_android.ui.main.common.result.ResultsFragment;
-import skin_cancer_detection_android.ui.main.home.HomeTabFragment;
+import skin_cancer_detection_android.ui.main.history.HistoryTabFragment;
 import skin_cancer_detection_android.ui.main.homescd.HomeFragment;
+import skin_cancer_detection_android.ui.main.homescd.HomeTabFragment;
 import skin_cancer_detection_android.ui.main.profile.ProfileTabFragment;
 import skin_cancer_detection_android.ui.main.social.SocialTabFragment;
 import butterknife.BindView;
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnIm
 
     {
         fragments.put(AppTab.HOME, new HomeTabFragment());
-        fragments.put(AppTab.HISTORY, new SocialTabFragment());
+        fragments.put(AppTab.HISTORY, new HistoryTabFragment());
         fragments.put(AppTab.PROFILE, new ProfileTabFragment());
     }
 
