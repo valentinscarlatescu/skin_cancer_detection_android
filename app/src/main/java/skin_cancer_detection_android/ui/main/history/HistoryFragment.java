@@ -71,4 +71,6 @@ public class HistoryFragment extends Fragment implements HistoryResultsAdapter.R
         ((MainActivity) requireActivity()).setFragment(fragment);
     }
 
+    public void init() {
+    }
 }

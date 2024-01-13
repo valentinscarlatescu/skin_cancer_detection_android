@@ -9,16 +9,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import skin_cancer_detection_android.ui.main.TabFragment;
-import skin_cancer_detection_android.ui.main.homescd.HomeFragment;
 
 public class HistoryTabFragment extends TabFragment {
 
-    private HomeFragment historyFragment;
+    private HistoryFragment historyFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        historyFragment = new HomeFragment();
+        historyFragment = new HistoryFragment();
     }
 
     @Nullable
@@ -31,6 +30,6 @@ public class HistoryTabFragment extends TabFragment {
 
     @Override
     protected void onTabClicked() {
-
+        historyFragment.init();
     }
 }

@@ -31,6 +31,6 @@ public class HomeTabFragment extends TabFragment {
 
     @Override
     protected void onTabClicked() {
-
+        homeFragment.init();
     }
 }

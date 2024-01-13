@@ -68,7 +68,7 @@ public class HomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_homescd, container, false);
         unbinder = ButterKnife.bind(this, view);
 
         init();
@@ -142,7 +142,7 @@ public class HomeFragment extends Fragment {
         builder.show();
     }
 
-    private void init() {
+    public void init() {
         User sessionUser = Session.getInstance().getUser();
         user.id = sessionUser.id;
         user.imagePath = sessionUser.imagePath;
