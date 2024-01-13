@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -49,8 +50,9 @@ import skin_cancer_detection_android.ui.main.common.result.ResultsFragment;
 import static android.content.Context.MODE_PRIVATE;
 
 public class HomeFragment extends Fragment {
+
     @BindView(R.id.imagePhotoImageView)
-    ImageView photoImageView;
+    Button photoButton;
 
     private OnImageUploadListener onImageUploadListener;
     private Unbinder unbinder;
@@ -151,7 +153,8 @@ public class HomeFragment extends Fragment {
                 .getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE)
                 .getString(Constants.USER_PASSWORD, "");
 
-        ImageHandler.loadImage(photoImageView, user.imagePath, requireContext().getDrawable(R.drawable.item_placeholder_padding));
+        // Afișează textul dorit pe buton (preluat din @string/home_image)
+        photoButton.setText(getString(R.string.home_image));
 
         bitmap = null;
         cameraImageUri = null;
@@ -206,7 +209,6 @@ public class HomeFragment extends Fragment {
             onImageUploadListener.onImageUploaded(result);
         }
     }
-
 
     private void pickPicture() {
         Intent intent = new Intent(Intent.ACTION_PICK);

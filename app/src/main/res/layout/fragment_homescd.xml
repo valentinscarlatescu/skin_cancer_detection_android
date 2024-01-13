@@ -40,7 +40,7 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <ImageView
+            <Button
                 android:id="@+id/imagePhotoImageView"
                 android:layout_width="197dp"
                 android:layout_height="119dp"
@@ -48,7 +48,6 @@
                 android:background="@color/colorPrimary"
                 android:text="@string/home_image"
                 android:textColor="@color/white" />
-
         </LinearLayout>
     </LinearLayout>
 
