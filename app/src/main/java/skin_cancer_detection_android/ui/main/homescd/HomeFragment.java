@@ -42,11 +42,9 @@ import skin_cancer_detection_android.net.Session;
 import skin_cancer_detection_android.net.client.RetrofitClient;
 import skin_cancer_detection_android.net.model.Result;
 import skin_cancer_detection_android.net.model.User;
-import skin_cancer_detection_android.net.service.AuthService;
-import skin_cancer_detection_android.net.service.FileService;
 import skin_cancer_detection_android.net.service.ResultService;
-import skin_cancer_detection_android.net.service.UserService;
 import skin_cancer_detection_android.ui.common.ProgressDialog;
+import skin_cancer_detection_android.ui.main.common.result.ResultsFragment;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -61,12 +59,11 @@ public class HomeFragment extends Fragment {
     private Uri cameraImageUri;
     private static final int CAMERA_REQUEST = 0;
     private static final int GALLERY_REQUEST = 1;
-    private AuthService authService = RetrofitClient.getRetrofitInstance().create(AuthService.class);
-    private UserService userService = RetrofitClient.getRetrofitInstance().create(UserService.class);
-    private FileService fileService = RetrofitClient.getRetrofitInstance().create(FileService.class);
-
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
+
+    // Retrofit service for Result
+    private ResultService resultService = RetrofitClient.getRetrofitInstance().create(ResultService.class);
 
     @Nullable
     @Override
@@ -96,6 +93,7 @@ public class HomeFragment extends Fragment {
                     try {
                         InputStream imageStream = requireContext().getContentResolver().openInputStream(cameraImageUri);
                         // Continuă cu procesarea sau trimiterea imaginii
+                        processImage(imageStream);
                     } catch (IOException e) {
                         requireActivity().runOnUiThread(this::showError);
                     }
@@ -112,6 +110,7 @@ public class HomeFragment extends Fragment {
                         }
                         InputStream imageStream = requireContext().getContentResolver().openInputStream(imageUri);
                         // Continuă cu procesarea sau trimiterea imaginii
+                        processImage(imageStream);
                     } catch (IOException e) {
                         requireActivity().runOnUiThread(this::showError);
                     }
@@ -119,8 +118,6 @@ public class HomeFragment extends Fragment {
                 }
         }
     }
-
-
 
     @OnClick(R.id.imagePhotoImageView)
     void onButtonClicked() {
@@ -145,29 +142,7 @@ public class HomeFragment extends Fragment {
         builder.show();
     }
 
-    private void updateScreen(ProgressDialog progressDialog) {
-        Call<User> userCall = userService.updateProfile(user);
-        userCall.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()) {
-                    Session.getInstance().setUser(response.body());
-                    Toast.makeText(getContext(), "Profile updated", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getContext(), ErrorHandler.getServerError(response), Toast.LENGTH_LONG).show();
-                }
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                progressDialog.dismiss();
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    void init() {
+    private void init() {
         User sessionUser = Session.getInstance().getUser();
         user.id = sessionUser.id;
         user.imagePath = sessionUser.imagePath;
@@ -182,33 +157,34 @@ public class HomeFragment extends Fragment {
         cameraImageUri = null;
     }
 
-    private void uploadImageToBackend(ProgressDialog progressDialog) {
-        // Asigură-te că calea imaginii este validă
-        if (user.imagePath == null || user.imagePath.isEmpty()) {
-            Toast.makeText(requireContext(), "Invalid image path", Toast.LENGTH_SHORT).show();
-            progressDialog.dismiss();
-            return;
-        }
+    private void processImage(InputStream imageStream) {
+        // Realizează procesarea imaginii și trimiterea către backend
+        // După procesare, afișează rezultatele în fragmentul ResultsFragment
+        ProgressDialog progressDialog = new ProgressDialog(requireContext());
+        progressDialog.show();
 
-        // Construiește obiectul Image cu calea imaginii și data curentă
+        // Construiește obiectul Result cu calea imaginii și data curentă
         Result result = new Result();
         result.user = user;
         result.imagePath = user.imagePath;
         result.dateTime = LocalDateTime.now();
 
-        // Realizează apelul către backend pentru încărcarea imaginii
-        Call<Result> uploadCall = ResultService.updateScreen(result);
+        // Realizează apelul către backend pentru încărcarea imaginii procesate
+        Call<Result> uploadCall = resultService.updateScreen(result);
         uploadCall.enqueue(new Callback<Result>() {
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
                 if (response.isSuccessful()) {
                     // Gestionează răspunsul de la backend după încărcarea imaginii
-                    Toast.makeText(requireContext(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Image processed successfully", Toast.LENGTH_SHORT).show();
 
                     // Comunică rezultatul către activitatea gazdă (MainActivity)
                     if (onImageUploadListener != null) {
                         onImageUploadListener.onImageUploaded(response.body());
                     }
+
+                    // Afișează rezultatele în fragmentul ResultsFragment
+                    showResults(response.body());
                 } else {
                     // Gestionează eroarea primită de la backend
                     Toast.makeText(requireContext(), ErrorHandler.getServerError(response), Toast.LENGTH_LONG).show();
@@ -223,6 +199,12 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void showResults(Result result) {
+        if (onImageUploadListener != null) {
+            onImageUploadListener.onImageUploaded(result);
+        }
     }
 
 
@@ -254,7 +236,4 @@ public class HomeFragment extends Fragment {
     public void setOnImageUploadListener(OnImageUploadListener listener) {
         this.onImageUploadListener = listener;
     }
-
-
-
 }

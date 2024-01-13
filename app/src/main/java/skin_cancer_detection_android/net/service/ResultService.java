@@ -17,5 +17,4 @@ public interface ResultService {
     @PUT("/api/result")
     Call<Result> updateScreen(@Body Result result);
 
-
 }

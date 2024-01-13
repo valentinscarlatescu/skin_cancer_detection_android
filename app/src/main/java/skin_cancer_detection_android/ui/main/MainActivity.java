@@ -134,13 +134,14 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnIm
     @Override
     public void onImageUploaded(Result result) {
         ResultsFragment resultsFragment = new ResultsFragment();
-        // Trimite rezultatul către ResultsFragment pentru a fi afișat
         resultsFragment.setResults(result);
 
-        // Înainte de a deschide fragmentul, asigură-te că ai rezultatele actualizate
-        resultsFragment.setResults(result);
-
-        // Deschide ResultsFragment în locul fragmentului curent
-        setFragment(resultsFragment);
+        // Înlocuiește fragmentul curent cu ResultsFragment
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.mainContent, resultsFragment)
+                .addToBackStack(null)
+                .commit();
     }
+
 }
