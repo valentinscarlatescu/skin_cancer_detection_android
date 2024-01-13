@@ -23,7 +23,6 @@ import skin_cancer_detection_android.ui.main.history.HistoryTabFragment;
 import skin_cancer_detection_android.ui.main.homescd.HomeFragment;
 import skin_cancer_detection_android.ui.main.homescd.HomeTabFragment;
 import skin_cancer_detection_android.ui.main.profile.ProfileTabFragment;
-import skin_cancer_detection_android.ui.main.social.SocialTabFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
