@@ -28,7 +28,7 @@
         android:layout_width="386dp"
         android:layout_height="399dp"
         android:layout_gravity="center"
-        android:src="@drawable/icon_cart" />
+        android:src="@drawable/item_homescd" />
 
     <Space
         android:layout_width="match_parent"

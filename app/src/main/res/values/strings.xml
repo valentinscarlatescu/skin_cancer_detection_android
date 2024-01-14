@@ -10,8 +10,6 @@
     <string name="button_register">Register</string>
     <string name="button_login">Login</string>
     <string name="button_logout">Logout</string>
-    <string name="button_view_carts">View carts</string>
-    <string name="button_add_product">Add product</string>
     <string name="button_validate">Validate</string>
 
     <string name="menu_item_home">Home</string>
@@ -40,21 +38,6 @@
     <string name="source_camera">Camera</string>
     <string name="source_gallery">Gallery</string>
     <string name="select_source">Select source</string>
-
-    <string name="carts_number">Carts number: %s</string>
-    <string name="product_price_unit">Average price: $%s/unit</string>
-    <string name="product_price_weight">Average price: $%s/100g</string>
-    <string name="product_category">Category: %s</string>
-    <string name="product_carts_number">Preferred in: %s carts</string>
-    <string name="product_additional_info">Additional info: %s</string>
-    <string name="product_name">Name: %s</string>
-    <string name="most_popular_products">Most popular products</string>
-    <string name="rec_product_popularity_info">%s appears in %d carts</string>
-    <string name="rec_product_content_info">%s appears along with the selected products in %d carts</string>
-    <string name="rec_product_already_in_cart">%s is already in cart</string>
-    <string name="rec_product_added_in_cart">%s added \u2713</string>
-    <string name="my_cart">My cart</string>
-    <string name="cart_empty">Cart empty</string>
 
     <string name="header_home">Skin Cancer Detection</string>
     <string name="home_malign">Malign</string>
