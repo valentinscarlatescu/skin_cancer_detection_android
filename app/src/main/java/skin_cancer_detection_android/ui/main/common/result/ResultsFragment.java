@@ -55,10 +55,13 @@ public class ResultsFragment extends Fragment implements ResultsAdapter.ResultCl
         View view = inflater.inflate(R.layout.fragment_result, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        result = new Result(); // Adăugați această linie pentru a inițializa obiectul result
+
         init();
 
         return view;
     }
+
 
     @Override
     public void onDestroyView() {
