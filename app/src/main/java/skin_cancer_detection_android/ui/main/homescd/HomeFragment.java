@@ -169,32 +169,25 @@ public class HomeFragment extends Fragment {
         // Construiește obiectul Result cu calea imaginii și data curentă
         Result result = new Result();
         result.user = user;
-        result.imagePath = user.imagePath;
         result.dateTime = LocalDateTime.now();
 
         // Realizează apelul către backend pentru încărcarea imaginii procesate
         MultipartBody.Part part = FileService.getPartFromBitmap(bitmap, "imagescd_");
-        Call<String> path = fileService.saveImage(part);
-        path.enqueue(new Callback<String>() {
+        Call<String> pathCall = fileService.saveImage(part);
+        pathCall.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    result.imagePath = response.body();
-                    // După ce primești calea imaginii, poți să o folosești cum dorești
-                    // result.imagePath = response.body();
-                    // Poți să continui cu afișarea rezultatelor
-                    if (onImageUploadListener != null) {
-                        onImageUploadListener.onImageUploaded(result);
-                    } else {
-                        showErrorDialog("The image was not processed. There was an error.");
-                        init();
-                    }
-
-                } else {
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), ErrorHandler.getServerError(response), Toast.LENGTH_LONG).show();
-                }
                 progressDialog.dismiss();
+                if (response.isSuccessful()) {
+                    // Actualizează calea imaginii în obiectul Result
+                    result.imagePath = response.body();
+
+                    // Salvare rezultat în baza de date
+                    saveResultInDatabase(result);
+                } else {
+                    showErrorDialog("The image was not processed. There was an error.");
+                    init();
+                }
             }
 
             @Override
@@ -204,6 +197,87 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
+//    private void processImage() {
+//        // Realizează procesarea imaginii și trimiterea către backend
+//        // După procesare, afișează rezultatele în fragmentul ResultsFragment
+//        ProgressDialog progressDialog = new ProgressDialog(requireContext());
+//        progressDialog.show();
+//
+//        // Construiește obiectul Result cu calea imaginii și data curentă
+//        Result result = new Result();
+//        result.user = user;
+//        result.imagePath = "";
+//        result.dateTime = LocalDateTime.now();
+//
+//        // Realizează apelul către backend pentru încărcarea imaginii procesate
+//        MultipartBody.Part part = FileService.getPartFromBitmap(bitmap, "imagescd_");
+//        Call<String> path = fileService.saveImage(part);
+//        path.enqueue(new Callback<String>() {
+//            @Override
+//            public void onResponse(Call<String> call, Response<String> response) {
+//                if (response.isSuccessful()) {
+//                    result.imagePath = response.body();
+//                    // După ce primești calea imaginii, poți să o folosești cum dorești
+//                    // result.imagePath = response.body();
+//                    // Poți să continui cu afișarea rezultatelor
+//                    if (onImageUploadListener != null) {
+//                        onImageUploadListener.onImageUploaded(result);
+//                    } else {
+//                        showErrorDialog("The image was not processed. There was an error.");
+//                        init();
+//                    }
+//
+//                } else {
+//                    progressDialog.dismiss();
+//                    Toast.makeText(getContext(), ErrorHandler.getServerError(response), Toast.LENGTH_LONG).show();
+//                }
+//                progressDialog.dismiss();
+//            }
+//
+//            @Override
+//            public void onFailure(Call<String> call, Throwable t) {
+//                progressDialog.dismiss();
+//                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+//            }
+//        });
+//    }
+
+    private void saveResultInDatabase(Result result) {
+        ProgressDialog progressDialog = new ProgressDialog(requireContext());
+        progressDialog.show();
+        Call<Result> saveCall = resultService.save(result);
+        saveCall.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful()) {
+                    // Verifică dacă răspunsul conține un obiect Result valid
+                    Result savedResult = response.body();
+                    if (savedResult != null) {
+                        // Acum poți să deschizi fragmentul ResultsFragment cu informațiile salvate
+                        if (onImageUploadListener != null) {
+                            onImageUploadListener.onImageUploaded(savedResult);
+                        }
+                    } else {
+                        // Răspunsul nu conține un obiect Result valid
+                        showErrorDialog("The image was not processed. There was an error.");
+                        init();
+                    }
+                } else {
+                    // Răspunsul de la server nu a fost de succes
+                    Toast.makeText(getContext(), ErrorHandler.getServerError(response), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 
     private void showErrorDialog(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());

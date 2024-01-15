@@ -10,9 +10,9 @@ public class Result {
     @SerializedName("user")
     public User user;
     @SerializedName("malign")
-    public String malign;
+    public Integer malign;
     @SerializedName("benign")
-    public String benign;
+    public Integer benign;
     @SerializedName("dateTime")
     public LocalDateTime dateTime;
     @SerializedName("imagePath")

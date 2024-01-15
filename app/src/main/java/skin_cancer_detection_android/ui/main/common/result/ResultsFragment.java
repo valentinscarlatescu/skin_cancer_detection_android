@@ -27,7 +27,11 @@ import skin_cancer_detection_android.net.model.Result;
 import skin_cancer_detection_android.ui.main.MainActivity;
 import skin_cancer_detection_android.ui.main.history.HistoryFragment;
 
-public class ResultsFragment extends Fragment implements ResultsAdapter.ResultClickListener {
+public class ResultsFragment extends Fragment {
+
+    private Result result;
+    private Unbinder unbinder;
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
 
     @BindView(R.id.resultImageView)
     ImageView photoImageView;
@@ -38,24 +42,11 @@ public class ResultsFragment extends Fragment implements ResultsAdapter.ResultCl
     @BindView(R.id.benignPercentageTextView)
     TextView benignTextView;
 
-    @BindString(R.string.home_image_date)
-    String resultDateFormat;
-
-
-    private Result result;
-    private ResultsAdapter resultsAdapter = new ResultsAdapter();
-    private Unbinder unbinder;
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_result, container, false);
         unbinder = ButterKnife.bind(this, view);
-
-        result = new Result(); // Adăugați această linie pentru a inițializa obiectul result
 
         init();
 
@@ -69,44 +60,14 @@ public class ResultsFragment extends Fragment implements ResultsAdapter.ResultCl
         unbinder.unbind();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    }
-
-
     void init() {
-        Result sessionResult = Session.getInstance().getResult();
-        result.id = sessionResult.id;
-        result.imagePath = sessionResult.imagePath;
-        result.malign = sessionResult.malign;
-        result.benign = sessionResult.benign;
-        result.dateTime = sessionResult.dateTime;
-
         ImageHandler.loadImage(photoImageView, result.imagePath, requireContext().getDrawable(R.drawable.item_placeholder_padding));
-        benignTextView.setText(result.benign);
-        malignTextView.setText(result.malign);
-        dateTimeTextView.setText(String.format(resultDateFormat, result.dateTime.format(dateTimeFormatter)));
-    }
-
-    private void showError() {
-        Toast.makeText(requireContext(), getString(R.string.message_default_error), Toast.LENGTH_SHORT).show();
-    }
-
-
-    @Override
-    public void onResultClicked(Result result) {
-        ResultsFragment fragment = new ResultsFragment();
-        fragment.setResults(result);
-        ((MainActivity) requireActivity()).setFragment(fragment);
+        benignTextView.setText(String.valueOf(result.benign));
+        malignTextView.setText(String.valueOf(result.malign));
+        dateTimeTextView.setText(result.dateTime != null ? result.dateTime.format(dateTimeFormatter) : "DateTime is null");
     }
 
     public void setResults(Result result) {
-        if (result != null) {
-            // Actualizează detaliile imaginii
-            ImageHandler.loadImage(photoImageView, result.imagePath, requireContext().getDrawable(R.drawable.item_placeholder_padding));
-            benignTextView.setText(result.benign);
-            malignTextView.setText(result.malign);
-            dateTimeTextView.setText(String.format(resultDateFormat, result.dateTime.format(dateTimeFormatter)));
-        }
+        this.result = result;
     }
 }

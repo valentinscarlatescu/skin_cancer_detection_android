@@ -2,6 +2,7 @@ package skin_cancer_detection_android.ui.main.history;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +20,13 @@ import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import skin_cancer_detection_android.R;
+import skin_cancer_detection_android.net.client.RetrofitClient;
 import skin_cancer_detection_android.net.model.Result;
+import skin_cancer_detection_android.net.service.ResultService;
 import skin_cancer_detection_android.ui.main.MainActivity;
 import skin_cancer_detection_android.ui.main.history.HistoryResultsAdapter;
 import skin_cancer_detection_android.ui.main.common.result.ResultsFragment;
@@ -35,8 +41,10 @@ public class HistoryFragment extends Fragment implements HistoryResultsAdapter.R
 
     private Unbinder unbinder;
     private List<Result> results;
-    private HistoryResultsAdapter resultsAdapter = new HistoryResultsAdapter();
-    
+    private HistoryResultsAdapter historyResultsAdapter = new HistoryResultsAdapter();
+    private ResultService resultService = RetrofitClient.getRetrofitInstance().create(ResultService.class);
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,10 +55,23 @@ public class HistoryFragment extends Fragment implements HistoryResultsAdapter.R
         decoration.setDrawable(separator);
 
         recyclerView.addItemDecoration(decoration);
-        recyclerView.setAdapter(resultsAdapter);
+        recyclerView.setAdapter(historyResultsAdapter);
 
-        resultsAdapter.setResults(results);
-        resultsAdapter.setOnResultClickListener(this);
+        resultService.getResults().enqueue(new Callback<List<Result>>() {
+            @Override
+            public void onResponse(Call<List<Result>> call, Response<List<Result>> response) {
+                if (response.isSuccessful()) {
+                    HistoryFragment.this.results = response.body();
+                    historyResultsAdapter.setResults(HistoryFragment.this.results);
+                    historyResultsAdapter.setOnResultClickListener(HistoryFragment.this);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Result>> call, Throwable t) {
+
+            }
+        });
 
         return view;
     }
@@ -61,9 +82,6 @@ public class HistoryFragment extends Fragment implements HistoryResultsAdapter.R
         unbinder.unbind();
     }
 
-    public void setResults(List<Result> results) {
-        this.results = results;
-    }
 
     @Override
     public void onResultClicked(Result result) {
@@ -72,6 +90,4 @@ public class HistoryFragment extends Fragment implements HistoryResultsAdapter.R
         ((MainActivity) requireActivity()).setFragment(fragment);
     }
 
-    public void init() {
-    }
 }
