@@ -30,6 +30,10 @@ public class Session {
         return result;
     }
 
+    public void setResult(Result result) {
+        this.result = result;
+    }
+
     public void setUser(User user) {
         this.user = user;
     }

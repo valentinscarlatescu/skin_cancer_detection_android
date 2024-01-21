@@ -69,6 +69,12 @@ public class LoginFragment extends Fragment {
         unbinder.unbind();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
     @OnClick(R.id.loginButton)
     void onLoginClicked() {
         listener.onLoginRequest(

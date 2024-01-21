@@ -18,9 +18,16 @@
         android:textColor="@color/white"
         android:textSize="18sp" />
 
+    <ImageView
+        android:id="@+id/resultHomeImageView"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:src="@drawable/item_homescd" />
+
     <Space
         android:layout_width="match_parent"
-        android:layout_height="225dp" />
+        android:layout_height="50dp" />
 
     <!-- Procentaj pentru rezultatul "Benign" -->
 
@@ -43,6 +50,15 @@
                 android:layout_marginBottom="8dp"
                 android:background="@color/colorPrimary"
                 android:text="@string/home_image"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/validatePhotoImageView"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/colorPrimary"
+                android:text="@string/home_validate"
                 android:textColor="@color/white" />
         </LinearLayout>
     </LinearLayout>

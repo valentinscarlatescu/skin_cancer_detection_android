@@ -45,6 +45,7 @@
     <string name="home_results">Results</string>
     <string name="home_history_results">History Results</string>
     <string name="home_image">IMAGE UPLOAD</string>
+    <string name="home_validate">VALIDATE</string>
     <string name="home_image_date">Image date: %1$s</string>
     <string name="home_percentage">%d%</string>
     <string name="home_date">Date</string>

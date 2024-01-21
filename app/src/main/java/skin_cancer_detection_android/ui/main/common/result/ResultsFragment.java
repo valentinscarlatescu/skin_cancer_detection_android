@@ -53,7 +53,6 @@ public class ResultsFragment extends Fragment {
         return view;
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -61,6 +60,7 @@ public class ResultsFragment extends Fragment {
     }
 
     void init() {
+
         ImageHandler.loadImage(photoImageView, result.imagePath, requireContext().getDrawable(R.drawable.item_placeholder_padding));
         benignTextView.setText(String.valueOf(result.benign));
         malignTextView.setText(String.valueOf(result.malign));
@@ -71,3 +71,4 @@ public class ResultsFragment extends Fragment {
         this.result = result;
     }
 }
+

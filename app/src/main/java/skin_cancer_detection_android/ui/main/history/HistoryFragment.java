@@ -24,8 +24,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import skin_cancer_detection_android.R;
+import skin_cancer_detection_android.net.Session;
 import skin_cancer_detection_android.net.client.RetrofitClient;
 import skin_cancer_detection_android.net.model.Result;
+import skin_cancer_detection_android.net.model.User;
 import skin_cancer_detection_android.net.service.ResultService;
 import skin_cancer_detection_android.ui.main.MainActivity;
 import skin_cancer_detection_android.ui.main.history.HistoryResultsAdapter;
@@ -39,11 +41,13 @@ public class HistoryFragment extends Fragment implements HistoryResultsAdapter.R
     @BindDrawable(R.drawable.vertical_separator)
     Drawable separator;
 
+
     private Unbinder unbinder;
     private List<Result> results;
+    private User user = new User();
     private HistoryResultsAdapter historyResultsAdapter = new HistoryResultsAdapter();
     private ResultService resultService = RetrofitClient.getRetrofitInstance().create(ResultService.class);
-
+    User sessionUser = Session.getInstance().getUser();
 
     @Nullable
     @Override
@@ -51,13 +55,18 @@ public class HistoryFragment extends Fragment implements HistoryResultsAdapter.R
         View view = inflater.inflate(R.layout.fragment_history, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        user.id = sessionUser.id;
+
         DividerItemDecoration decoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         decoration.setDrawable(separator);
 
         recyclerView.addItemDecoration(decoration);
         recyclerView.setAdapter(historyResultsAdapter);
 
-        resultService.getResults().enqueue(new Callback<List<Result>>() {
+        historyResultsAdapter.setResults(results);
+        historyResultsAdapter.setOnResultClickListener(this);
+
+        resultService.getResults(user.id).enqueue(new Callback<List<Result>>() {
             @Override
             public void onResponse(Call<List<Result>> call, Response<List<Result>> response) {
                 if (response.isSuccessful()) {
@@ -72,8 +81,12 @@ public class HistoryFragment extends Fragment implements HistoryResultsAdapter.R
 
             }
         });
-
+        initData();
         return view;
+    }
+
+    public void setResults(List<Result> results) {
+        this.results = results;
     }
 
     @Override
@@ -82,6 +95,28 @@ public class HistoryFragment extends Fragment implements HistoryResultsAdapter.R
         unbinder.unbind();
     }
 
+    private void initData() {
+
+        user.id = sessionUser.id;
+        // Verifică dacă utilizatorul este null
+        if (user != null) {
+            resultService.getResults(user.id).enqueue(new Callback<List<Result>>() {
+                @Override
+                public void onResponse(Call<List<Result>> call, Response<List<Result>> response) {
+                    if (response.isSuccessful()) {
+                        results = response.body();
+                        historyResultsAdapter.setResults(results);
+                        historyResultsAdapter.setOnResultClickListener(HistoryFragment.this);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Result>> call, Throwable t) {
+                    // Tratează eroarea în funcție de nevoile tale
+                }
+            });
+        }
+    }
 
     @Override
     public void onResultClicked(Result result) {

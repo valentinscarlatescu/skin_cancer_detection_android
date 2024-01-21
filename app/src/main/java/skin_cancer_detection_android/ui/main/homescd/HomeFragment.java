@@ -11,10 +11,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,6 +41,7 @@ import retrofit2.Response;
 import skin_cancer_detection_android.Constants;
 import skin_cancer_detection_android.R;
 import skin_cancer_detection_android.net.ErrorHandler;
+import skin_cancer_detection_android.net.ImageHandler;
 import skin_cancer_detection_android.net.Session;
 import skin_cancer_detection_android.net.client.RetrofitClient;
 import skin_cancer_detection_android.net.model.Result;
@@ -46,23 +49,27 @@ import skin_cancer_detection_android.net.model.User;
 import skin_cancer_detection_android.net.service.FileService;
 import skin_cancer_detection_android.net.service.ResultService;
 import skin_cancer_detection_android.ui.common.ProgressDialog;
+import skin_cancer_detection_android.ui.main.MainActivity;
 import skin_cancer_detection_android.ui.main.common.result.ResultsFragment;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class HomeFragment extends Fragment {
 
+    @BindView(R.id.resultHomeImageView)
+    ImageView resultHomeImageView;
     @BindView(R.id.imagePhotoImageView)
     Button photoButton;
+    @BindView(R.id.validatePhotoImageView)
+    Button validatePhotoButton;
 
-    private OnImageUploadListener onImageUploadListener;
     private Unbinder unbinder;
-    private User user = new User();
+    private User user;
+    private Result result = new Result();
     private Bitmap bitmap;
     private Uri cameraImageUri;
     private static final int CAMERA_REQUEST = 0;
     private static final int GALLERY_REQUEST = 1;
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
     private FileService fileService = RetrofitClient.getRetrofitInstance().create(FileService.class);
     private ResultService resultService = RetrofitClient.getRetrofitInstance().create(ResultService.class);
@@ -72,8 +79,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_homescd, container, false);
         unbinder = ButterKnife.bind(this, view);
-
-        init();
 
         return view;
     }
@@ -94,8 +99,7 @@ public class HomeFragment extends Fragment {
                         InputStream imageStream = requireContext().getContentResolver().openInputStream(cameraImageUri);
                         bitmap = BitmapFactory.decodeStream(imageStream);
                         // Poți afișa imaginea în ImageView dacă dorești
-                        // photoImageView.setImageBitmap(bitmap);
-                        processImage();
+                        resultHomeImageView.setImageBitmap(bitmap);
                     } catch (IOException e) {
                         requireActivity().runOnUiThread(this::showError);
                     }
@@ -111,8 +115,7 @@ public class HomeFragment extends Fragment {
                         InputStream imageStream = requireContext().getContentResolver().openInputStream(imageUri);
                         bitmap = BitmapFactory.decodeStream(imageStream);
                         // Poți afișa imaginea în ImageView dacă dorești
-                        // photoImageView.setImageBitmap(bitmap);
-                        processImage();
+                        resultHomeImageView.setImageBitmap(bitmap);
                     } catch (IOException e) {
                         requireActivity().runOnUiThread(this::showError);
                     }
@@ -145,148 +148,145 @@ public class HomeFragment extends Fragment {
     }
 
     public void init() {
-        User sessionUser = Session.getInstance().getUser();
-        user.id = sessionUser.id;
-        user.imagePath = sessionUser.imagePath;
+        user = Session.getInstance().getUser();
 
-        String password = requireActivity().getApplicationContext()
-                .getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE)
-                .getString(Constants.USER_PASSWORD, "");
+        Result sessionResult = Session.getInstance().getResult();
 
-        // Afișează textul dorit pe buton (preluat din @string/home_image)
-        photoButton.setText(getString(R.string.home_image));
+        // Adăugă log pentru a verifica valoarea lui result.imagePath
+        Log.d("ImageViewDebug", "Result.imagePath in init(): " + result.imagePath);
+
+        ImageHandler.loadImage(resultHomeImageView, result.imagePath, requireContext().getDrawable(R.drawable.item_homescd));
 
         bitmap = null;
         cameraImageUri = null;
     }
 
-    private void processImage() {
-        // Realizează procesarea imaginii și trimiterea către backend
-        // După procesare, afișează rezultatele în fragmentul ResultsFragment
-        ProgressDialog progressDialog = new ProgressDialog(requireContext());
-        progressDialog.show();
-
-        // Construiește obiectul Result cu calea imaginii și data curentă
-        Result result = new Result();
+    @OnClick(R.id.validatePhotoImageView)
+    void processImage() {
         result.user = user;
         result.dateTime = LocalDateTime.now();
 
-        // Realizează apelul către backend pentru încărcarea imaginii procesate
-        MultipartBody.Part part = FileService.getPartFromBitmap(bitmap, "imagescd_");
-        Call<String> pathCall = fileService.saveImage(part);
-        pathCall.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                progressDialog.dismiss();
-                if (response.isSuccessful()) {
-                    // Actualizează calea imaginii în obiectul Result
-                    result.imagePath = response.body();
-
-                    // Salvare rezultat în baza de date
-                    saveResultInDatabase(result);
-                } else {
-                    showErrorDialog("The image was not processed. There was an error.");
-                    init();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                progressDialog.dismiss();
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-//    private void processImage() {
-//        // Realizează procesarea imaginii și trimiterea către backend
-//        // După procesare, afișează rezultatele în fragmentul ResultsFragment
-//        ProgressDialog progressDialog = new ProgressDialog(requireContext());
-//        progressDialog.show();
-//
-//        // Construiește obiectul Result cu calea imaginii și data curentă
-//        Result result = new Result();
-//        result.user = user;
-//        result.imagePath = "";
-//        result.dateTime = LocalDateTime.now();
-//
-//        // Realizează apelul către backend pentru încărcarea imaginii procesate
-//        MultipartBody.Part part = FileService.getPartFromBitmap(bitmap, "imagescd_");
-//        Call<String> path = fileService.saveImage(part);
-//        path.enqueue(new Callback<String>() {
-//            @Override
-//            public void onResponse(Call<String> call, Response<String> response) {
-//                if (response.isSuccessful()) {
-//                    result.imagePath = response.body();
-//                    // După ce primești calea imaginii, poți să o folosești cum dorești
-//                    // result.imagePath = response.body();
-//                    // Poți să continui cu afișarea rezultatelor
-//                    if (onImageUploadListener != null) {
-//                        onImageUploadListener.onImageUploaded(result);
-//                    } else {
-//                        showErrorDialog("The image was not processed. There was an error.");
-//                        init();
-//                    }
-//
-//                } else {
-//                    progressDialog.dismiss();
-//                    Toast.makeText(getContext(), ErrorHandler.getServerError(response), Toast.LENGTH_LONG).show();
-//                }
-//                progressDialog.dismiss();
-//            }
-//
-//            @Override
-//            public void onFailure(Call<String> call, Throwable t) {
-//                progressDialog.dismiss();
-//                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-//            }
-//        });
-//    }
-
-    private void saveResultInDatabase(Result result) {
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
-        Call<Result> saveCall = resultService.save(result);
-        saveCall.enqueue(new Callback<Result>() {
+
+        if (bitmap == null) {
+            saveResultInDatabase(progressDialog);
+        } else {
+            MultipartBody.Part part = FileService.getPartFromBitmap(bitmap, "imagescd_");
+            Call<String> pathCall = fileService.saveImage(part);
+            pathCall.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (response.isSuccessful()) {
+                        Log.d("LatestResult", "Response: " + response.body());
+                        // Actualizează calea imaginii în obiectul Result
+                        result.imagePath = response.body();
+                        // Salvare rezultat în baza de date
+                        saveResultInDatabase(progressDialog);
+
+                        // Apelul către init() se face aici
+                        init();
+                    } else {
+                        // Tratează cazurile în care răspunsul nu conține un corp sau este gol
+                        progressDialog.dismiss();
+                        String errorMessage = response.body() != null && !response.body().isEmpty() ?
+                                response.body() : ErrorHandler.getServerError(response);
+
+                        Toast.makeText(getContext(), "Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                    Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+
+    private void getLatestResultAndOpenFragment() {
+        Call<Result> latestResultCall = resultService.findLatestResult(user.id);
+        latestResultCall.enqueue(new Callback<Result>() {
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
-                progressDialog.dismiss();
                 if (response.isSuccessful()) {
-                    // Verifică dacă răspunsul conține un obiect Result valid
-                    Result savedResult = response.body();
-                    if (savedResult != null) {
-                        // Acum poți să deschizi fragmentul ResultsFragment cu informațiile salvate
-                        if (onImageUploadListener != null) {
-                            onImageUploadListener.onImageUploaded(savedResult);
-                        }
+                    if (response.body() != null) {
+                        Result latestResult = response.body();
+                        openResultsFragment(latestResult);
                     } else {
-                        // Răspunsul nu conține un obiect Result valid
-                        showErrorDialog("The image was not processed. There was an error.");
-                        init();
+                        // Tratează cazul în care răspunsul nu conține un corp sau este nul
+                        Toast.makeText(getContext(), "Empty or null response body", Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    // Răspunsul de la server nu a fost de succes
+                    // Tratează cazul în care cererea pentru cel mai recent rezultat nu a reușit
                     Toast.makeText(getContext(), ErrorHandler.getServerError(response), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Result> call, Throwable t) {
-                progressDialog.dismiss();
+                // Tratează cazul în care cererea a eșuat
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
 
-    private void showErrorDialog(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Error")
-                .setMessage(message)
-                .setPositiveButton("OK", (dialog, which) -> {
-                    // Închide dialogul, nu trebuie să faci nimic special aici
-                })
-                .show();
+
+    private void saveResultInDatabase(ProgressDialog progressDialog) {
+        Call<Result> saveCall = resultService.saveResult(result);
+        saveCall.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                if (response.isSuccessful()) {
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+
+                    // Adăugă log pentru a verifica valoarea lui result.imagePath
+                    Log.d("ImageViewDebug", "Result.imagePath in saveCall onResponse(): " + result.imagePath);
+
+                    Result latestResult = response.body();
+                    openResultsFragment(latestResult);
+
+                } else {
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+
+                    try {
+                        String errorBody = response.errorBody().string();
+                        Log.e("ServerError", errorBody);
+                        Toast.makeText(getContext(), "Error: " + errorBody, Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+
+                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+    private void openResultsFragment(Result result) {
+
+        ResultsFragment fragment = new ResultsFragment();
+        fragment.setResults(result);
+        ((MainActivity) requireActivity()).setFragment(fragment);
+
     }
 
     private void pickPicture() {
@@ -310,11 +310,4 @@ public class HomeFragment extends Fragment {
         Toast.makeText(requireContext(), getString(R.string.message_default_error), Toast.LENGTH_SHORT).show();
     }
 
-    public interface OnImageUploadListener {
-        void onImageUploaded(Result result);
-    }
-
-    public void setOnImageUploadListener(OnImageUploadListener listener) {
-        this.onImageUploadListener = listener;
-    }
 }

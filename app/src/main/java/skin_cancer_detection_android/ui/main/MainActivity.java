@@ -26,7 +26,7 @@ import skin_cancer_detection_android.ui.main.profile.ProfileTabFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements HomeFragment.OnImageUploadListener {
+public class MainActivity extends AppCompatActivity {
 
     private boolean isTwiceClicked;
     private AppTab appTab = AppTab.HOME;
@@ -129,19 +129,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnIm
                 .commit();
 
         fragmentToShow.onTabClicked();
-    }
-
-    @Override
-    public void onImageUploaded(Result result) {
-        ResultsFragment resultsFragment = new ResultsFragment();
-        resultsFragment.setResults(result);
-
-        // Înlocuiește fragmentul curent cu ResultsFragment
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.mainContent, resultsFragment)
-                .addToBackStack(null)
-                .commit();
     }
 
 }
