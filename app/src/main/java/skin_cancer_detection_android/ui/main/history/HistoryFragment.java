@@ -81,7 +81,7 @@ public class HistoryFragment extends Fragment implements HistoryResultsAdapter.R
 
             }
         });
-        initData();
+        init();
         return view;
     }
 
@@ -95,7 +95,7 @@ public class HistoryFragment extends Fragment implements HistoryResultsAdapter.R
         unbinder.unbind();
     }
 
-    private void initData() {
+    void init() {
 
         user.id = sessionUser.id;
         // Verifică dacă utilizatorul este null

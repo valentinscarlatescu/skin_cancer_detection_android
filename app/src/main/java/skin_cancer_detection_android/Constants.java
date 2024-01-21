@@ -2,7 +2,7 @@ package skin_cancer_detection_android;
 
 public class Constants {
 
-    public static final String BASE_URL = "http://192.168.147.201:8081/";
+    public static final String BASE_URL = "http://192.168.0.31:8081/";
     public static final String USER_EMAIL = "UserEmail";
     public static final String USER_PASSWORD = "UserPassword";
     public static final String USER_TOKEN = "UserToken";

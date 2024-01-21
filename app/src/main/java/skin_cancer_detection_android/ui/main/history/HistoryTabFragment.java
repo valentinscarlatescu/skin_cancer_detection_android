@@ -30,6 +30,6 @@ public class HistoryTabFragment extends TabFragment {
 
     @Override
     protected void onTabClicked() {
-
+        historyFragment.init();
     }
 }
