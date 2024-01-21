@@ -18,6 +18,10 @@
         android:textColor="@color/white"
         android:textSize="18sp" />
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
     <ImageView
         android:id="@+id/resultHomeImageView"
         android:layout_width="250dp"

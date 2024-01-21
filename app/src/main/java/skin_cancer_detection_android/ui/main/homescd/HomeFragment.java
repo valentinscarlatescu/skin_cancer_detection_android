@@ -64,7 +64,6 @@ public class HomeFragment extends Fragment {
     Button validatePhotoButton;
 
     private Unbinder unbinder;
-    private User user;
     private Result result = new Result();
     private Bitmap bitmap;
     private Uri cameraImageUri;
@@ -73,6 +72,7 @@ public class HomeFragment extends Fragment {
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
     private FileService fileService = RetrofitClient.getRetrofitInstance().create(FileService.class);
     private ResultService resultService = RetrofitClient.getRetrofitInstance().create(ResultService.class);
+    private User user = Session.getInstance().getUser();
 
     @Nullable
     @Override
@@ -98,7 +98,6 @@ public class HomeFragment extends Fragment {
                     try {
                         InputStream imageStream = requireContext().getContentResolver().openInputStream(cameraImageUri);
                         bitmap = BitmapFactory.decodeStream(imageStream);
-                        // Poți afișa imaginea în ImageView dacă dorești
                         resultHomeImageView.setImageBitmap(bitmap);
                     } catch (IOException e) {
                         requireActivity().runOnUiThread(this::showError);
@@ -114,7 +113,6 @@ public class HomeFragment extends Fragment {
                         }
                         InputStream imageStream = requireContext().getContentResolver().openInputStream(imageUri);
                         bitmap = BitmapFactory.decodeStream(imageStream);
-                        // Poți afișa imaginea în ImageView dacă dorești
                         resultHomeImageView.setImageBitmap(bitmap);
                     } catch (IOException e) {
                         requireActivity().runOnUiThread(this::showError);
@@ -148,18 +146,12 @@ public class HomeFragment extends Fragment {
     }
 
     public void init() {
-        user = Session.getInstance().getUser();
-
-        Result sessionResult = Session.getInstance().getResult();
-
-        // Adăugă log pentru a verifica valoarea lui result.imagePath
-        Log.d("ImageViewDebug", "Result.imagePath in init(): " + result.imagePath);
-
         ImageHandler.loadImage(resultHomeImageView, result.imagePath, requireContext().getDrawable(R.drawable.item_homescd));
 
         bitmap = null;
         cameraImageUri = null;
     }
+
 
     @OnClick(R.id.validatePhotoImageView)
     void processImage() {
@@ -178,20 +170,13 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
                     if (response.isSuccessful()) {
-                        Log.d("LatestResult", "Response: " + response.body());
-                        // Actualizează calea imaginii în obiectul Result
                         result.imagePath = response.body();
-                        // Salvare rezultat în baza de date
                         saveResultInDatabase(progressDialog);
-
-                        // Apelul către init() se face aici
                         init();
                     } else {
-                        // Tratează cazurile în care răspunsul nu conține un corp sau este gol
                         progressDialog.dismiss();
                         String errorMessage = response.body() != null && !response.body().isEmpty() ?
                                 response.body() : ErrorHandler.getServerError(response);
-
                         Toast.makeText(getContext(), "Error: " + errorMessage, Toast.LENGTH_LONG).show();
                     }
                 }
@@ -207,36 +192,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
-    private void getLatestResultAndOpenFragment() {
-        Call<Result> latestResultCall = resultService.findLatestResult(user.id);
-        latestResultCall.enqueue(new Callback<Result>() {
-            @Override
-            public void onResponse(Call<Result> call, Response<Result> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null) {
-                        Result latestResult = response.body();
-                        openResultsFragment(latestResult);
-                    } else {
-                        // Tratează cazul în care răspunsul nu conține un corp sau este nul
-                        Toast.makeText(getContext(), "Empty or null response body", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    // Tratează cazul în care cererea pentru cel mai recent rezultat nu a reușit
-                    Toast.makeText(getContext(), ErrorHandler.getServerError(response), Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Result> call, Throwable t) {
-                // Tratează cazul în care cererea a eșuat
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-
-
     private void saveResultInDatabase(ProgressDialog progressDialog) {
         Call<Result> saveCall = resultService.saveResult(result);
         saveCall.enqueue(new Callback<Result>() {
@@ -247,9 +202,7 @@ public class HomeFragment extends Fragment {
                         progressDialog.dismiss();
                     }
 
-                    // Adăugă log pentru a verifica valoarea lui result.imagePath
                     Log.d("ImageViewDebug", "Result.imagePath in saveCall onResponse(): " + result.imagePath);
-
                     Result latestResult = response.body();
                     openResultsFragment(latestResult);
 
@@ -282,7 +235,6 @@ public class HomeFragment extends Fragment {
 
 
     private void openResultsFragment(Result result) {
-
         ResultsFragment fragment = new ResultsFragment();
         fragment.setResults(result);
         ((MainActivity) requireActivity()).setFragment(fragment);

@@ -42,7 +42,7 @@
     <string name="header_home">Skin Cancer Detection</string>
     <string name="home_malign">Malign</string>
     <string name="home_benign">Benign</string>
-    <string name="home_results">Results</string>
+    <string name="home_results">Result</string>
     <string name="home_history_results">History Results</string>
     <string name="home_image">IMAGE UPLOAD</string>
     <string name="home_validate">VALIDATE</string>
