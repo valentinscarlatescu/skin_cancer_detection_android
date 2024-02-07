@@ -18,8 +18,11 @@ public interface ResultService {
 //    @PUT("/api/results")
 //    Call<Result> updateScreen(@Body Result result);
 
-    @POST("/api/results") // Aici trebuie să fie calea corectă spre metoda din backend pentru creare
-    Call<Result> saveResult(@Body Result result);
+//    @POST("/api/results") // Aici trebuie să fie calea corectă spre metoda din backend pentru creare
+//    Call<Result> saveResult(@Body Result result);
+
+    @POST("/api/processImage")
+    Call<Result> processImage(@Body Result result);
 
     @GET("/api/results")
     Call<List<Result>> getResults(@Query("userId") Long userId);
